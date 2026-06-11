@@ -1,0 +1,50 @@
+{
+  "name": "pocket-desk",
+  "version": "0.1.0",
+  "description": "Explorateur de bases pocket-db — un fichier, zéro serveur.",
+  "main": "out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "start": "electron ."
+  },
+  "keywords": [
+    "pocket-db",
+    "electron",
+    "database"
+  ],
+  "author": "Fabien Bavent",
+  "license": "MIT",
+  "devDependencies": {
+    "@electron-toolkit/utils": "3.0.0",
+    "@vitejs/plugin-vue": "5.1.4",
+    "electron": "32.3.3",
+    "electron-builder": "25.1.8",
+    "electron-vite": "2.3.0",
+    "vite": "5.4.19"
+  },
+  "dependencies": {
+    "@axfab/pocket-db": "^0.1.2",
+    "@fontsource/jetbrains-mono": "^5.2.8",
+    "@fontsource/manrope": "^5.2.8",
+    "pinia": "2.2.4",
+    "vue": "3.5.13"
+  },
+  "build": {
+    "appId": "com.axfab.pocket-desk",
+    "productName": "pocket·desk",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "out/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.developer-tools"
+    },
+    "win": {
+      "target": "nsis"
+    }
+  }
+}
