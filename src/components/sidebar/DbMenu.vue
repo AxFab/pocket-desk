@@ -1,4 +1,6 @@
 <script setup>
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { onMounted, onBeforeUnmount } from 'vue'
 import AppIcon from '@/components/AppIcons.vue'
 
@@ -8,16 +10,17 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['action', 'close'])
+const { t } = useI18n()
 
-const items = [
-  { id: 'add-collection', label: 'Ajouter une collection', icon: 'Plus' },
-  { id: 'rename',         label: 'Renommer la base',       icon: 'Rename' },
-  { id: 'duplicate',      label: 'Dupliquer la base',       icon: 'Copy' },
-  { id: 'compact',        label: 'Compacter la base',       icon: 'Compact' },
+const items = computed(() => [
+  { id: 'add-collection', label: t('dbMenu.addCollection'), icon: 'Plus' },
+  { id: 'rename',         label: t('dbMenu.renameDb'),      icon: 'Rename' },
+  { id: 'duplicate',      label: t('dbMenu.duplicateDb'),   icon: 'Copy' },
+  { id: 'compact',        label: t('dbMenu.compactDb'),     icon: 'Compact' },
   { sep: true },
-  { id: 'close-tabs',     label: 'Fermer les onglets',      icon: 'CloseTabs' },
-  { id: 'close',          label: 'Fermer la base',          icon: 'Close', danger: true },
-]
+  { id: 'close-tabs',     label: t('dbMenu.closeTabs'),     icon: 'CloseTabs' },
+  { id: 'close',          label: t('dbMenu.closeDb'),       icon: 'Close', danger: true },
+])
 
 function onClickAway(e) {
   emit('close')

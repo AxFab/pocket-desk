@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAppStore, sizeStr } from '@/store/app.js'
 import AppIcon from '@/components/AppIcons.vue'
 
@@ -8,19 +9,20 @@ const props = defineProps({
 })
 
 const store = useAppStore()
+const { t } = useI18n()
 const db = computed(() => store.dbById(props.dbId))
 
 const totalDocs = computed(() => db.value?.collections.reduce((s, c) => s + c.docs.length, 0) ?? 0)
 const totalSize = computed(() => db.value?.collections.reduce((s, c) => s + c.estSize, 0) ?? 0)
 const totalDead = computed(() => db.value?.collections.reduce((s, c) => s + c.dead, 0) ?? 0)
 
-const toolbarActions = [
-  { id: 'add-collection', label: 'Ajouter une collection', icon: 'Plus', primary: true },
-  { id: 'rename',         label: 'Renommer',               icon: 'Rename' },
-  { id: 'duplicate',      label: 'Dupliquer',              icon: 'Copy' },
-  { id: 'compact',        label: 'Compacter',              icon: 'Compact' },
-  { id: 'close-tabs',     label: 'Fermer les onglets',     icon: 'CloseTabs' },
-]
+const toolbarActions = computed(() => [
+  { id: 'add-collection', label: t('dbView.toolbar.addCollection'), icon: 'Plus', primary: true },
+  { id: 'rename',         label: t('dbView.toolbar.rename'),        icon: 'Rename' },
+  { id: 'duplicate',      label: t('dbView.toolbar.duplicate'),     icon: 'Copy' },
+  { id: 'compact',        label: t('dbView.toolbar.compact'),       icon: 'Compact' },
+  { id: 'close-tabs',     label: t('dbView.toolbar.closeTabs'),     icon: 'CloseTabs' },
+])
 
 function handleAction(id) {
   const dbId = props.dbId
@@ -30,14 +32,25 @@ function handleAction(id) {
     case 'add-collection':
       store.openModal({
         type: 'prompt',
-        data: { title: 'Ajouter une collection', label: 'Nom', placeholder: 'ex : sessions', icon: 'Collection', confirm: 'Créer' },
+        data: {
+          title: t('modals.addCollection.title'),
+          label: t('modals.addCollection.label'),
+          placeholder: t('modals.addCollection.placeholder'),
+          icon: 'Collection',
+          confirm: t('modals.addCollection.confirm')
+        },
         onConfirm: (val) => { store.addCollection(dbId, val); store.closeModal() }
       })
       break
     case 'rename':
       store.openModal({
         type: 'prompt',
-        data: { title: 'Renommer la base', label: 'Nom de la connexion', value: db.name, confirm: 'Renommer' },
+        data: {
+          title: t('modals.renameDb.title'),
+          label: t('modals.renameDb.label'),
+          value: db.name,
+          confirm: t('modals.renameDb.confirm')
+        },
         onConfirm: (val) => { store.renameDatabase(dbId, val); store.closeModal() }
       })
       break
@@ -49,7 +62,7 @@ function handleAction(id) {
       break
     case 'close-tabs':
       store.closeDbTabs(dbId)
-      store.flash('Onglets fermés')
+      store.flash(t('store.tabsClosedShort'))
       break
   }
 }
@@ -64,9 +77,9 @@ function deleteCollection(colId) {
   store.openModal({
     type: 'confirm',
     data: {
-      title: 'Supprimer la collection',
-      body: `Supprimer définitivement « ${col.name} » et ses ${col.docs.length} documents ?`,
-      confirm: 'Supprimer',
+      title: t('modals.deleteCollection.title'),
+      body: t('modals.deleteCollection.body', { name: col.name, count: col.docs.length }),
+      confirm: t('modals.deleteCollection.confirm'),
       danger: true
     },
     onConfirm: () => { store.deleteCollection(props.dbId, colId); store.closeModal() }
@@ -91,19 +104,19 @@ function deleteCollection(colId) {
       <div class="vh-stats">
         <div class="stat">
           <span class="stat-n">{{ db.collections.length }}</span>
-          <span class="stat-l">collections</span>
+          <span class="stat-l">{{ t('dbView.stats.collections') }}</span>
         </div>
         <div class="stat">
           <span class="stat-n">{{ totalDocs }}</span>
-          <span class="stat-l">documents</span>
+          <span class="stat-l">{{ t('dbView.stats.documents') }}</span>
         </div>
         <div class="stat">
           <span class="stat-n">{{ sizeStr(totalSize) }}</span>
-          <span class="stat-l">sur disque</span>
+          <span class="stat-l">{{ t('dbView.stats.onDisk') }}</span>
         </div>
         <div class="stat">
           <span class="stat-n">{{ totalDead }}</span>
-          <span class="stat-l">enreg. morts</span>
+          <span class="stat-l">{{ t('dbView.stats.deadRecords') }}</span>
         </div>
       </div>
     </header>
@@ -127,17 +140,17 @@ function deleteCollection(colId) {
       <table class="dtable">
         <thead>
           <tr>
-            <th>Collection</th>
-            <th class="num">Documents</th>
-            <th class="num">Index</th>
-            <th class="num">Taille est.</th>
-            <th class="num">Morts</th>
+            <th>{{ t('dbView.table.collection') }}</th>
+            <th class="num">{{ t('dbView.table.documents') }}</th>
+            <th class="num">{{ t('dbView.table.index') }}</th>
+            <th class="num">{{ t('dbView.table.estSize') }}</th>
+            <th class="num">{{ t('dbView.table.dead') }}</th>
             <th class="act"></th>
           </tr>
         </thead>
         <tbody>
           <tr v-if="db.collections.length === 0" class="empty-row">
-            <td colspan="6">Aucune collection. Utilisez « Ajouter une collection ».</td>
+            <td colspan="6">{{ t('dbView.table.noCollections') }}</td>
           </tr>
           <tr
             v-for="col in db.collections"
@@ -155,7 +168,7 @@ function deleteCollection(colId) {
             <td class="num">{{ sizeStr(col.estSize) }}</td>
             <td class="num dead">{{ col.dead }}</td>
             <td class="act">
-              <button class="row-icon" title="Supprimer" @click.stop="deleteCollection(col.id)">
+              <button class="row-icon" :title="t('dbView.table.delete')" @click.stop="deleteCollection(col.id)">
                 <AppIcon name="Trash" :size="15" />
               </button>
             </td>

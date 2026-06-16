@@ -1,0 +1,238 @@
+{
+  "sidebar": {
+    "openDb": "Ouvrir une base",
+    "openedDbs": "Bases ouvertes",
+    "noDbs": "Aucune base ouverte.",
+    "noDbsHint": "Ouvrez un fichier .pdb.",
+    "collapse": "Replier",
+    "expand": "Déplier",
+    "noCollections": "— aucune collection —",
+    "options": "Options",
+    "deleteCollection": "Supprimer la collection"
+  },
+  "dbMenu": {
+    "addCollection": "Ajouter une collection",
+    "renameDb": "Renommer la base",
+    "duplicateDb": "Dupliquer la base",
+    "compactDb": "Compacter la base",
+    "closeTabs": "Fermer les onglets",
+    "closeDb": "Fermer la base"
+  },
+  "emptyState": {
+    "tagline": "Explorateur de bases .pdb — un fichier, zéro serveur.",
+    "openDb": "Ouvrir une base",
+    "tipOfDay": "Astuce du jour",
+    "nextTip": "Autre astuce"
+  },
+  "dbView": {
+    "stats": {
+      "collections": "collections",
+      "documents": "documents",
+      "onDisk": "sur disque",
+      "deadRecords": "enreg. morts"
+    },
+    "toolbar": {
+      "addCollection": "Ajouter une collection",
+      "rename": "Renommer",
+      "duplicate": "Dupliquer",
+      "compact": "Compacter",
+      "closeTabs": "Fermer les onglets"
+    },
+    "table": {
+      "collection": "Collection",
+      "documents": "Documents",
+      "index": "Index",
+      "estSize": "Taille est.",
+      "dead": "Morts",
+      "noCollections": "Aucune collection. Utilisez « Ajouter une collection ».",
+      "delete": "Supprimer"
+    }
+  },
+  "collectionView": {
+    "noSecondaryIndex": "aucun index secondaire",
+    "toolbar": {
+      "addDocument": "Ajouter un document",
+      "createIndex": "Créer un index",
+      "documents": "Documents",
+      "indexes": "Index",
+      "refresh": "Rafraîchir"
+    },
+    "query": {
+      "placeholder": "{ } — ex : { \"status\": \"actif\", \"price\": { \"$lt\": 20 } }",
+      "clear": "Vider",
+      "run": "Exécuter"
+    },
+    "result": {
+      "noMatch": "Aucun document ne correspond à la requête."
+    },
+    "doc": {
+      "edit": "Éditer",
+      "delete": "Supprimer"
+    },
+    "indexTable": {
+      "field": "Champ",
+      "type": "Type",
+      "documents": "Documents",
+      "deleteIndex": "Supprimer l'index",
+      "noIndexes": "Aucun index. Utilisez « Créer un index ».",
+      "createIndex": "Créer un index"
+    }
+  },
+  "modals": {
+    "cancel": "Annuler",
+    "validate": "Valider",
+    "newConnection": {
+      "title": "Ouvrir une base",
+      "file": "Fichier",
+      "filePlaceholder": "~/…/ma-base.pdb",
+      "browse": "Parcourir",
+      "connectionName": "Nom de la connexion",
+      "namePlaceholder": "nom affiché",
+      "color": "Couleur",
+      "colorHint": "(repère des onglets)",
+      "open": "Ouvrir la base"
+    },
+    "addCollection": {
+      "title": "Ajouter une collection",
+      "label": "Nom de la collection",
+      "placeholder": "ex : sessions",
+      "confirm": "Créer"
+    },
+    "renameDb": {
+      "title": "Renommer la base",
+      "label": "Nom de la connexion",
+      "confirm": "Renommer"
+    },
+    "closeDb": {
+      "title": "Fermer la base",
+      "body": "Fermer « {name} » ? La connexion sera retirée de la liste (le fichier n'est pas supprimé).",
+      "confirm": "Fermer la base"
+    },
+    "deleteCollection": {
+      "title": "Supprimer la collection",
+      "body": "Supprimer définitivement « {name} » et ses {count} documents ?",
+      "confirm": "Supprimer"
+    },
+    "deleteDoc": {
+      "title": "Supprimer le document",
+      "body": "Cette action ajoute un enregistrement « tombstone » au journal. Confirmer la suppression ?",
+      "confirm": "Supprimer"
+    },
+    "dropIndex": {
+      "title": "Supprimer l'index",
+      "body": "Supprimer l'index sur le champ « {field} » ?",
+      "confirm": "Supprimer"
+    },
+    "editDoc": {
+      "newTitle": "Nouveau document",
+      "editTitle": "Éditer le document",
+      "form": "Formulaire",
+      "json": "JSON",
+      "insert": "Insérer",
+      "save": "Enregistrer",
+      "addField": "Ajouter un champ",
+      "removeField": "Retirer le champ",
+      "fieldPlaceholder": "champ"
+    },
+    "createIndex": {
+      "title": "Créer un index",
+      "field": "Champ",
+      "fieldPlaceholder": "ex : category",
+      "type": "Type",
+      "noteString": "Supporte les recherches $eq et $in.",
+      "noteNumber": "Supporte $eq, $in et les scans de plage ($gt, $lte…).",
+      "confirm": "Créer l'index"
+    }
+  },
+  "prefs": {
+    "appearance": "Apparence",
+    "theme": "Thème",
+    "light": "Clair",
+    "dark": "Sombre",
+    "system": "Système",
+    "density": "Densité",
+    "compact": "Dense",
+    "regular": "Normal",
+    "comfy": "Spacieux",
+    "accent": "Accent"
+  },
+  "titleBar": {
+    "themeTitle": "Thème : {label} (cliquez pour changer)",
+    "minimize": "Réduire",
+    "maximize": "Agrandir",
+    "close": "Fermer"
+  },
+  "statusBar": {
+    "ready": "pocket-desk · prêt",
+    "lockUnknown": "verrou · inconnu",
+    "lockOk": "verrou OK · 1 process",
+    "lockHeld": "verrou tenu par PID {pid}",
+    "lockOrphan": "verrou orphelin",
+    "lockAbsent": "verrou absent",
+    "collection": "collection",
+    "database": "base"
+  },
+  "store": {
+    "tabsClosed": "Onglets de « {name} » fermés",
+    "tabsClosedShort": "Onglets fermés",
+    "dbOpened": "Base « {name} » ouverte",
+    "openFailed": "Échec d'ouverture : {error}",
+    "loadError": "Erreur de chargement : {error}",
+    "compacted": "Base compactée · {count} enregistrements morts récupérés",
+    "compactFailed": "Échec du compactage : {error}",
+    "duplicated": "Base dupliquée → « {name} »",
+    "duplicateFailed": "Échec de la duplication : {error}",
+    "refreshed": "Données rechargées",
+    "refreshFailed": "Échec du rechargement : {error}",
+    "collectionCreated": "Collection « {name} » créée",
+    "collectionCreateFailed": "Échec de création : {error}",
+    "collectionDeleted": "Collection « {name} » supprimée",
+    "collectionDeleteFailed": "Échec de suppression : {error}",
+    "docInserted": "Document inséré",
+    "docInsertFailed": "Échec de l'insertion : {error}",
+    "docUpdated": "Document mis à jour",
+    "docUpdateFailed": "Échec de la mise à jour : {error}",
+    "docDeleted": "Document supprimé",
+    "docDeleteFailed": "Échec de la suppression : {error}",
+    "indexCreated": "Index « {field} » créé",
+    "indexCreateFailed": "Échec de création de l'index : {error}",
+    "indexDropped": "Index « {field} » supprimé",
+    "indexDropFailed": "Échec de suppression de l'index : {error}"
+  },
+  "errors": {
+    "invalidJson": "JSON invalide : {error}",
+    "invalidQuery": "Requête invalide : {error}"
+  },
+  "tips": [
+    {
+      "t": "Compactez régulièrement",
+      "d": "Chaque update ou delete laisse un enregistrement mort. db.compact() réécrit le fichier en une passe et récupère l'espace."
+    },
+    {
+      "t": "Indexez avant de trier",
+      "d": "Le tri est toujours eager. Réduisez d'abord l'ensemble candidat avec une requête indexée avant de trier de grandes collections."
+    },
+    {
+      "t": "Un fichier, une base",
+      "d": "Une instance pocket-db est un unique fichier .pdb — copiez-le pour sauvegarder, déplacez-le pour migrer. Pas de serveur, pas de démon."
+    },
+    {
+      "t": "Les _id sont immuables",
+      "d": "Le champ _id (24 caractères hex) ne peut être modifié par aucun opérateur d'update. Fournissez le vôtre à l'insertion si besoin."
+    },
+    {
+      "t": "Le planificateur choisit l'index",
+      "d": "Pour chaque requête, pocket-db sélectionne automatiquement l'index le plus sélectif disponible. NumberIndex gère aussi les scans de plage."
+    }
+  ],
+  "colors": {
+    "clay": "Argile",
+    "moss": "Mousse",
+    "slate": "Ardoise",
+    "ochre": "Ocre",
+    "plum": "Prune",
+    "pine": "Pin",
+    "rust": "Rouille",
+    "indigo": "Indigo"
+  }
+}

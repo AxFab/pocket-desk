@@ -1,10 +1,12 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { DB_COLORS } from '@/store/app.js'
 import ModalBase from './ModalBase.vue'
 import AppIcon from '@/components/AppIcons.vue'
 
 const emit = defineEmits(['close', 'confirm'])
+const { t } = useI18n()
 
 const path  = ref('')
 const name  = ref('')
@@ -24,7 +26,7 @@ async function browse() {
     }
   } catch {
     // If IPC not available (e.g. running outside Electron)
-    const p = prompt('Chemin du fichier .pdb')
+    const p = prompt(t('modals.newConnection.filePlaceholder'))
     if (p) {
       path.value = p
       if (!name.value) {
@@ -50,38 +52,38 @@ function confirm() {
 </script>
 
 <template>
-  <ModalBase title="Ouvrir une base" icon="Database" :accent="color" @close="emit('close')">
+  <ModalBase :title="t('modals.newConnection.title')" icon="Database" :accent="color" @close="emit('close')">
     <!-- File field -->
     <label class="field">
-      <span class="flabel">Fichier</span>
+      <span class="flabel">{{ t('modals.newConnection.file') }}</span>
       <div class="file-pick">
         <input
           class="inp mono"
-          placeholder="~/…/ma-base.pdb"
+          :placeholder="t('modals.newConnection.filePlaceholder')"
           :value="path"
           @input="onPathInput($event.target.value)"
         />
         <button class="btn ghost sm" @click="browse">
           <AppIcon name="Folder" :size="15" />
-          Parcourir
+          {{ t('modals.newConnection.browse') }}
         </button>
       </div>
     </label>
 
     <!-- Connection name -->
     <label class="field">
-      <span class="flabel">Nom de la connexion</span>
-      <input class="inp" placeholder="nom affiché" v-model="name" />
+      <span class="flabel">{{ t('modals.newConnection.connectionName') }}</span>
+      <input class="inp" :placeholder="t('modals.newConnection.namePlaceholder')" v-model="name" />
     </label>
 
     <!-- Color picker -->
     <div class="field">
-      <span class="flabel">Couleur <em class="flabel-hint">(repère des onglets)</em></span>
+      <span class="flabel">{{ t('modals.newConnection.color') }} <em class="flabel-hint">{{ t('modals.newConnection.colorHint') }}</em></span>
       <div class="swatches">
         <button
           v-for="c in DB_COLORS"
           :key="c.id"
-          :title="c.label"
+          :title="t('colors.' + c.id)"
           class="swatch"
           :class="{ on: color === c.hex }"
           :style="{ background: c.hex }"
@@ -93,8 +95,8 @@ function confirm() {
     </div>
 
     <template #footer>
-      <button class="btn ghost" @click="emit('close')">Annuler</button>
-      <button class="btn primary" :disabled="!valid" @click="confirm">Ouvrir la base</button>
+      <button class="btn ghost" @click="emit('close')">{{ t('modals.cancel') }}</button>
+      <button class="btn primary" :disabled="!valid" @click="confirm">{{ t('modals.newConnection.open') }}</button>
     </template>
   </ModalBase>
 </template>

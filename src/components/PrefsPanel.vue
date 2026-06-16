@@ -1,10 +1,12 @@
 <script setup>
 import { onMounted, onBeforeUnmount } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAppStore, ACCENT_OPTIONS } from '@/store/app.js'
 import AppIcon from './AppIcons.vue'
 
 const emit = defineEmits(['close'])
 const store = useAppStore()
+const { t } = useI18n()
 
 function onClickAway() { emit('close') }
 onMounted(() => setTimeout(() => document.addEventListener('mousedown', onClickAway), 50))
@@ -13,23 +15,23 @@ onBeforeUnmount(() => document.removeEventListener('mousedown', onClickAway))
 
 <template>
   <div class="prefs-panel" @mousedown.stop>
-    <div class="prefs-section">Apparence</div>
+    <div class="prefs-section">{{ t('prefs.appearance') }}</div>
 
     <div class="prefs-row">
-      <span class="prefs-label">Thème</span>
+      <span class="prefs-label">{{ t('prefs.theme') }}</span>
       <div class="prefs-seg">
         <button
-          v-for="t in ['light', 'dark', 'system']"
-          :key="t"
+          v-for="mode in ['light', 'dark', 'system']"
+          :key="mode"
           class="prefs-seg-btn"
-          :class="{ on: store.themeMode === t }"
-          @click="store.setPref('themeMode', t)"
-        >{{ t === 'light' ? 'Clair' : t === 'dark' ? 'Sombre' : 'Système' }}</button>
+          :class="{ on: store.themeMode === mode }"
+          @click="store.setPref('themeMode', mode)"
+        >{{ t('prefs.' + mode) }}</button>
       </div>
     </div>
 
     <div class="prefs-row">
-      <span class="prefs-label">Densité</span>
+      <span class="prefs-label">{{ t('prefs.density') }}</span>
       <div class="prefs-seg">
         <button
           v-for="d in ['compact', 'regular', 'comfy']"
@@ -37,12 +39,12 @@ onBeforeUnmount(() => document.removeEventListener('mousedown', onClickAway))
           class="prefs-seg-btn"
           :class="{ on: store.density === d }"
           @click="store.setPref('density', d)"
-        >{{ d === 'compact' ? 'Dense' : d === 'regular' ? 'Normal' : 'Spacieux' }}</button>
+        >{{ t('prefs.' + d) }}</button>
       </div>
     </div>
 
     <div class="prefs-row">
-      <span class="prefs-label">Accent</span>
+      <span class="prefs-label">{{ t('prefs.accent') }}</span>
       <div style="display:flex;gap:5px">
         <button
           v-for="a in ACCENT_OPTIONS"

@@ -1,9 +1,11 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAppStore } from '@/store/app.js'
 import AppIcon from './AppIcons.vue'
 
 const store = useAppStore()
+const { t } = useI18n()
 const tab = computed(() => store.activeTab)
 const db = computed(() => store.activeDb)
 
@@ -20,12 +22,12 @@ watch(db, async (d) => {
 }, { immediate: true })
 
 const lockLabel = computed(() => {
-  if (!db.value) return 'pocket-desk · prêt'
-  if (!lock.value) return 'verrou · inconnu'
-  if (lock.value.own) return 'verrou OK · 1 process'
-  if (lock.value.exists && lock.value.alive) return `verrou tenu par PID ${lock.value.pid}`
-  if (lock.value.exists) return 'verrou orphelin'
-  return 'verrou absent'
+  if (!db.value) return t('statusBar.ready')
+  if (!lock.value) return t('statusBar.lockUnknown')
+  if (lock.value.own) return t('statusBar.lockOk')
+  if (lock.value.exists && lock.value.alive) return t('statusBar.lockHeld', { pid: lock.value.pid })
+  if (lock.value.exists) return t('statusBar.lockOrphan')
+  return t('statusBar.lockAbsent')
 })
 
 const lockOk = computed(() => !db.value || (lock.value && lock.value.own))
@@ -40,7 +42,7 @@ const lockOk = computed(() => !db.value || (lock.value && lock.value.own))
       </span>
       <span class="sb-item mono">{{ db.path }}</span>
       <span class="sb-spacer" />
-      <span class="sb-item">{{ tab.type === 'collection' ? 'collection' : 'base' }}</span>
+      <span class="sb-item">{{ tab.type === 'collection' ? t('statusBar.collection') : t('statusBar.database') }}</span>
     </template>
     <span class="sb-spacer" v-else />
     <span class="sb-lock" :class="{ warn: !lockOk }">

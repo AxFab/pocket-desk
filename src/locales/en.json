@@ -1,0 +1,238 @@
+{
+  "sidebar": {
+    "openDb": "Open a base",
+    "openedDbs": "Open bases",
+    "noDbs": "No open base.",
+    "noDbsHint": "Open a .pdb file.",
+    "collapse": "Collapse",
+    "expand": "Expend",
+    "noCollections": "— no collection —",
+    "options": "Options",
+    "deleteCollection": "Delete the collection"
+  },
+  "dbMenu": {
+    "addCollection": "Add a collection",
+    "renameDb": "Rename the base",
+    "duplicateDb": "Duplicate the base",
+    "compactDb": "Compact the base",
+    "closeTabs": "Close tabs",
+    "closeDb": "Close the base"
+  },
+  "emptyState": {
+    "tagline": "database explorer for .pdb — one file, no server.",
+    "openDb": "Open a base",
+    "tipOfDay": "Tip of the day",
+    "nextTip": "Next Tip"
+  },
+  "dbView": {
+    "stats": {
+      "collections": "collections",
+      "documents": "documents",
+      "onDisk": "on disk",
+      "deadRecords": "dead records"
+    },
+    "toolbar": {
+      "addCollection": "Add a collection",
+      "rename": "Rename",
+      "duplicate": "Duplicate",
+      "compact": "Compact",
+      "closeTabs": "Close the tabs"
+    },
+    "table": {
+      "collection": "Collection",
+      "documents": "Documents",
+      "index": "Index",
+      "estSize": "Est. size",
+      "dead": "Dead",
+      "noCollections": "No collection. Use « Add a collection ».",
+      "delete": "Delete"
+    }
+  },
+  "collectionView": {
+    "noSecondaryIndex": "no secondary index",
+    "toolbar": {
+      "addDocument": "Add a document",
+      "createIndex": "Create a index",
+      "documents": "Documents",
+      "indexes": "Index",
+      "refresh": "Refresh"
+    },
+    "query": {
+      "placeholder": "{ } — ex : { \"status\": \"actif\", \"price\": { \"$lt\": 20 } }",
+      "clear": "Clear",
+      "run": "Run"
+    },
+    "result": {
+      "noMatch": "No document matching the request."
+    },
+    "doc": {
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "indexTable": {
+      "field": "Field",
+      "type": "Type",
+      "documents": "Documents",
+      "deleteIndex": "Delete the index",
+      "noIndexes": "No index. Use « Create a index ».",
+      "createIndex": "Create a index"
+    }
+  },
+  "modals": {
+    "cancel": "Cancel",
+    "validate": "Validate",
+    "newConnection": {
+      "title": "Open a base",
+      "file": "File",
+      "filePlaceholder": "~/…/my-base.pdb",
+      "browse": "Browse",
+      "connectionName": "Connection name",
+      "namePlaceholder": "printed name",
+      "color": "Color",
+      "colorHint": "(tabs color hint)",
+      "open": "Open the base"
+    },
+    "addCollection": {
+      "title": "Add a collection",
+      "label": "Collection name",
+      "placeholder": "ex : sessions",
+      "confirm": "Create"
+    },
+    "renameDb": {
+      "title": "Rename the base",
+      "label": "Connection name",
+      "confirm": "Rename"
+    },
+    "closeDb": {
+      "title": "close the base",
+      "body": "Close « {name} »? The connection will be removed form the list (the file is not deleted).",
+      "confirm": "Close the base"
+    },
+    "deleteCollection": {
+      "title": "Delete the collection",
+      "body": "Definitively delete « {name} » and its {count} documents?",
+      "confirm": "Delete"
+    },
+    "deleteDoc": {
+      "title": "Delete the document",
+      "body": "This action add a « tombstone » record to the journal. Confirme suppression?",
+      "confirm": "Delete"
+    },
+    "dropIndex": {
+      "title": "Delete the index",
+      "body": "Delete the index on the field « {field} »?",
+      "confirm": "Delete"
+    },
+    "editDoc": {
+      "newTitle": "New document",
+      "editTitle": "Edit the document",
+      "form": "Formular",
+      "json": "JSON",
+      "insert": "Insert",
+      "save": "Save",
+      "addField": "Add a field",
+      "removeField": "Remove the field",
+      "fieldPlaceholder": "field"
+    },
+    "createIndex": {
+      "title": "Create an index",
+      "field": "Field",
+      "fieldPlaceholder": "ex: category",
+      "type": "Type",
+      "noteString": "Support search using $eq and $in.",
+      "noteNumber": "Supporte $eq, $in and range ($gt, $lte…).",
+      "confirm": "Create index"
+    }
+  },
+  "prefs": {
+    "appearance": "Appearence",
+    "theme": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "density": "Density",
+    "compact": "Compact",
+    "regular": "Regular",
+    "comfy": "Comfy",
+    "accent": "Accent"
+  },
+  "titleBar": {
+    "themeTitle": "Theme: {label} (click to change)",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "close": "Close"
+  },
+  "statusBar": {
+    "ready": "pocket-desk · ready",
+    "lockUnknown": "lock · unknown",
+    "lockOk": "lock OK · 1 process",
+    "lockHeld": "lock hold by PID {pid}",
+    "lockOrphan": "orphan lock",
+    "lockAbsent": "absent lock",
+    "collection": "collection",
+    "database": "base"
+  },
+  "store": {
+    "tabsClosed": "Tab « {name} » closed",
+    "tabsClosedShort": "Tab closed",
+    "dbOpened": "Base « {name} » open",
+    "openFailed": "Open failed: {error}",
+    "loadError": "Loading error: {error}",
+    "compacted": "Base compacted · {count} dead record reclaimed",
+    "compactFailed": "Compact failure : {error}",
+    "duplicated": "Base duplicated → « {name} »",
+    "duplicateFailed": "Duplication failed: {error}",
+    "refreshed": "Data reloaded",
+    "refreshFailed": "Reload failed: {error}",
+    "collectionCreated": "Collection « {name} » created",
+    "collectionCreateFailed": "Creation failure: {error}",
+    "collectionDeleted": "Collection « {name} » delete",
+    "collectionDeleteFailed": "Suppression failure: {error}",
+    "docInserted": "Document inserted",
+    "docInsertFailed": "Insertion failure: {error}",
+    "docUpdated": "Document updated",
+    "docUpdateFailed": "Update failure: {error}",
+    "docDeleted": "Document deleted",
+    "docDeleteFailed": "Suppression failure: {error}",
+    "indexCreated": "Index on « {field} » created",
+    "indexCreateFailed": "Creation of index failed: {error}",
+    "indexDropped": "Index on « {field} » dropped",
+    "indexDropFailed": "Index drop failed: {error}"
+  },
+  "errors": {
+    "invalidJson": "Invalid JSON: {error}",
+    "invalidQuery": "Invalid request : {error}"
+  },
+  "tips": [
+    {
+      "t": "Compact regularly",
+      "d": "Each update or delete leaves a dead record. db.compact() rewrites the file in one pass and recovers space."
+    },
+    {
+      "t": "Index before sorting",
+      "d": "Sorting is always eager. First, reduce the candidate set with an indexed query before sorting large collections."
+    },
+    {
+      "t": "A file, a database",
+      "d": "A pocket-db instance is a single . pdb file—copy it to save, move it to migrate. No server, no daemon."
+    },
+    {
+      "t": "The _ids are immutable",
+      "d": "The _id field (24 hex characters) cannot be modified by any update operator. Provide your own when you insert if necessary."
+    },
+    {
+      "t": "The planner chooses the index",
+      "d": "For each query, pocket-db automatically selects the most selective index available. NumberIndex also handles range scans."
+    }
+  ],
+  "colors": {
+    "clay": "Clay",
+    "moss": "Moss",
+    "slate": "Slate",
+    "ochre": "Ochre",
+    "plum": "Plum",
+    "pine": "Pine",
+    "rust": "Rust",
+    "indigo": "Indigo"
+  }
+}

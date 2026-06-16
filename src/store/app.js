@@ -1,5 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import i18n from '@/i18n.js'
+
+const t = (...args) => i18n.global.t(...args)
 
 // ---- Helpers ----------------------------------------------------------------
 
@@ -37,13 +40,7 @@ export const DB_COLORS = [
   { id: 'indigo', hex: '#5e6699', label: 'Indigo' },
 ]
 
-export const TIPS = [
-  { t: 'Compactez régulièrement', d: 'Chaque update ou delete laisse un enregistrement mort. db.compact() réécrit le fichier en une passe et récupère l\'espace.' },
-  { t: 'Indexez avant de trier', d: 'Le tri est toujours eager. Réduisez d\'abord l\'ensemble candidat avec une requête indexée avant de trier de grandes collections.' },
-  { t: 'Un fichier, une base', d: 'Une instance pocket-db est un unique fichier .pdb — copiez-le pour sauvegarder, déplacez-le pour migrer. Pas de serveur, pas de démon.' },
-  { t: 'Les _id sont immuables', d: 'Le champ _id (24 caractères hex) ne peut être modifié par aucun opérateur d\'update. Fournissez le vôtre à l\'insertion si besoin.' },
-  { t: 'Le planificateur choisit l\'index', d: 'Pour chaque requête, pocket-db sélectionne automatiquement l\'index le plus sélectif disponible. NumberIndex gère aussi les scans de plage.' },
-]
+const TIPS_COUNT = 5 // matches the number of tips in fr.json
 
 export const ACCENT_OPTIONS = ['#3f9a4f', '#3c7d8a', '#9a6a3f', '#7a5aa0']
 
@@ -111,7 +108,7 @@ export const useAppStore = defineStore('app', () => {
   const toast = ref(null)
   let toastTimer = null
 
-  const tipIndex = ref(Math.floor(Math.random() * TIPS.length))
+  const tipIndex = ref(Math.floor(Math.random() * TIPS_COUNT))
 
   // Platform info (set after init)
   const platform = ref('darwin')
@@ -241,7 +238,7 @@ export const useAppStore = defineStore('app', () => {
     try {
       result = await window.pocketDesk.openDb(id, path)
     } catch (e) {
-      flash('Échec d\'ouverture : ' + ipcError(e))
+      flash(t('store.openFailed', { error: ipcError(e) }))
       return null
     }
 
@@ -265,11 +262,11 @@ export const useAppStore = defineStore('app', () => {
     try {
       await Promise.all(collections.map(c => fetchCollection(id, c.id)))
     } catch (e) {
-      flash('Erreur de chargement : ' + ipcError(e))
+      flash(t('store.loadError', { error: ipcError(e) }))
     }
 
     setTimeout(() => openDbTab(id), 0)
-    flash('Base « ' + db.name + ' » ouverte')
+    flash(t('store.dbOpened', { name: db.name }))
     return db
   }
 
@@ -286,12 +283,12 @@ export const useAppStore = defineStore('app', () => {
     try {
       await window.pocketDesk.compact(dbId)
     } catch (e) {
-      flash('Échec du compactage : ' + ipcError(e))
+      flash(t('store.compactFailed', { error: ipcError(e) }))
       return
     }
     patchDb(dbId, d => ({ ...d, collections: d.collections.map(c => ({ ...c, dead: 0 })) }))
     await Promise.all(db.collections.map(c => fetchCollection(dbId, c.id).catch(() => {})))
-    flash('Base compactée · ' + before + ' enregistrements morts récupérés')
+    flash(t('store.compacted', { count: before }))
   }
 
   function renameDatabase(dbId, name) {
@@ -306,11 +303,11 @@ export const useAppStore = defineStore('app', () => {
     try {
       await window.pocketDesk.duplicateFile(db.path, destPath)
     } catch (e) {
-      flash('Échec de la duplication : ' + ipcError(e))
+      flash(t('store.duplicateFailed', { error: ipcError(e) }))
       return
     }
     const copy = await openDatabase({ path: destPath, name: db.name + '-copie', color: db.color })
-    if (copy) flash('Base dupliquée → « ' + copy.name + ' »')
+    if (copy) flash(t('store.duplicated', { name: copy.name }))
   }
 
   // ---- Collection mutations ---------------------------------------------------
@@ -321,7 +318,7 @@ export const useAppStore = defineStore('app', () => {
     try {
       stats = await window.pocketDesk.createCollection(dbId, name)
     } catch (e) {
-      flash('Échec de création : ' + ipcError(e))
+      flash(t('store.collectionCreateFailed', { error: ipcError(e) }))
       return
     }
     patchDb(dbId, d => ({
@@ -334,7 +331,7 @@ export const useAppStore = defineStore('app', () => {
         estSize: 64, dead: 0
       }]
     }))
-    flash('Collection « ' + name + ' » créée')
+    flash(t('store.collectionCreated', { name }))
   }
 
   async function deleteCollection(dbId, colId) {
@@ -343,12 +340,12 @@ export const useAppStore = defineStore('app', () => {
     try {
       await window.pocketDesk.dropCollection(dbId, c.name)
     } catch (e) {
-      flash('Échec de suppression : ' + ipcError(e))
+      flash(t('store.collectionDeleteFailed', { error: ipcError(e) }))
       return
     }
     patchDb(dbId, d => ({ ...d, collections: d.collections.filter(x => x.id !== colId) }))
     closeTab('t_col_' + colId)
-    flash('Collection « ' + c.name + ' » supprimée')
+    flash(t('store.collectionDeleted', { name: c.name }))
   }
 
   // ---- Document mutations (IPC first, then re-fetch) ---------------------------
@@ -360,11 +357,11 @@ export const useAppStore = defineStore('app', () => {
     try {
       await window.pocketDesk.insertOne(dbId, c.name, doc)
     } catch (e) {
-      flash('Échec de l\'insertion : ' + ipcError(e))
+      flash(t('store.docInsertFailed', { error: ipcError(e) }))
       return
     }
     await fetchCollection(dbId, colId)
-    flash('Document inséré')
+    flash(t('store.docInserted'))
   }
 
   async function updateDocument(dbId, colId, doc) {
@@ -373,12 +370,12 @@ export const useAppStore = defineStore('app', () => {
     try {
       await window.pocketDesk.replaceOne(dbId, c.name, doc)
     } catch (e) {
-      flash('Échec de la mise à jour : ' + ipcError(e))
+      flash(t('store.docUpdateFailed', { error: ipcError(e) }))
       return
     }
     patchCol(dbId, colId, col => ({ ...col, dead: col.dead + 1 }))
     await fetchCollection(dbId, colId)
-    flash('Document mis à jour')
+    flash(t('store.docUpdated'))
   }
 
   async function deleteDocument(dbId, colId, docId) {
@@ -387,12 +384,12 @@ export const useAppStore = defineStore('app', () => {
     try {
       await window.pocketDesk.deleteOne(dbId, c.name, docId)
     } catch (e) {
-      flash('Échec de la suppression : ' + ipcError(e))
+      flash(t('store.docDeleteFailed', { error: ipcError(e) }))
       return
     }
     patchCol(dbId, colId, col => ({ ...col, dead: col.dead + 1 }))
     await fetchCollection(dbId, colId)
-    flash('Document supprimé')
+    flash(t('store.docDeleted'))
   }
 
   // ---- Index mutations ----------------------------------------------------------
@@ -403,11 +400,11 @@ export const useAppStore = defineStore('app', () => {
     try {
       await window.pocketDesk.createIndex(dbId, c.name, field, type)
     } catch (e) {
-      flash('Échec de création de l\'index : ' + ipcError(e))
+      flash(t('store.indexCreateFailed', { error: ipcError(e) }))
       return
     }
     await fetchCollection(dbId, colId)
-    flash('Index « ' + field + ' » créé')
+    flash(t('store.indexCreated', { field }))
   }
 
   async function dropIndex(dbId, colId, field) {
@@ -416,11 +413,11 @@ export const useAppStore = defineStore('app', () => {
     try {
       await window.pocketDesk.dropIndex(dbId, c.name, field)
     } catch (e) {
-      flash('Échec de suppression de l\'index : ' + ipcError(e))
+      flash(t('store.indexDropFailed', { error: ipcError(e) }))
       return
     }
     await fetchCollection(dbId, colId)
-    flash('Index « ' + field + ' » supprimé')
+    flash(t('store.indexDropped', { field }))
   }
 
   // ---- Query state ------------------------------------------------------------
@@ -443,7 +440,7 @@ export const useAppStore = defineStore('app', () => {
 
   // ---- Tips -------------------------------------------------------------------
 
-  function nextTip() { tipIndex.value = (tipIndex.value + 1) % TIPS.length }
+  function nextTip() { tipIndex.value = (tipIndex.value + 1) % TIPS_COUNT }
 
   return {
     // prefs

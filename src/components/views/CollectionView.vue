@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAppStore, sizeStr, oid } from '@/store/app.js'
 import AppIcon from '@/components/AppIcons.vue'
 import JsonView from '@/components/JsonView.vue'
@@ -10,6 +11,7 @@ const props = defineProps({
 })
 
 const store = useAppStore()
+const { t } = useI18n()
 
 const db  = computed(() => store.dbById(props.dbId))
 const col = computed(() => db.value?.collections.find(c => c.id === props.colId))
@@ -29,14 +31,14 @@ async function execute() {
   }
   let q
   try { q = JSON.parse(s) } catch (e) {
-    result.value = { docs: [], error: 'JSON invalide : ' + e.message, ms: 0 }
+    result.value = { docs: [], error: t('errors.invalidJson', { error: e.message }), ms: 0 }
     return
   }
   try {
     const r = await store.findDocuments(props.dbId, props.colId, q)
     result.value = { docs: r.docs, error: null, ms: r.ms }
   } catch (e) {
-    result.value = { docs: [], error: 'Requête invalide : ' + (e?.message || e), ms: 0 }
+    result.value = { docs: [], error: t('errors.invalidQuery', { error: e?.message || e }), ms: 0 }
   }
 }
 
@@ -59,9 +61,9 @@ function clearQuery() {
 async function refresh() {
   try {
     await store.fetchCollection(props.dbId, props.colId)
-    store.flash('Données rechargées')
+    store.flash(t('store.refreshed'))
   } catch (e) {
-    store.flash('Échec du rechargement : ' + (e?.message || e))
+    store.flash(t('store.refreshFailed', { error: e?.message || e }))
   }
 }
 
@@ -94,10 +96,10 @@ function deleteDoc(doc) {
   store.openModal({
     type: 'confirm',
     data: {
-      title: 'Supprimer le document',
-      body: "Cette action ajoute un enregistrement « tombstone » au journal. Confirmer la suppression ?",
+      title: t('modals.deleteDoc.title'),
+      body: t('modals.deleteDoc.body'),
       detail: '_id: ' + doc._id,
-      confirm: 'Supprimer',
+      confirm: t('modals.deleteDoc.confirm'),
       danger: true
     },
     onConfirm: () => {
@@ -133,9 +135,9 @@ function dropIndex(field) {
   store.openModal({
     type: 'confirm',
     data: {
-      title: "Supprimer l'index",
-      body: `Supprimer l'index sur le champ « ${field} » ?`,
-      confirm: 'Supprimer',
+      title: t('modals.dropIndex.title'),
+      body: t('modals.dropIndex.body', { field }),
+      confirm: t('modals.dropIndex.confirm'),
       danger: true
     },
     onConfirm: () => {
@@ -146,6 +148,15 @@ function dropIndex(field) {
 }
 
 const secondaryIndexes = computed(() => col.value?.indexes.filter(i => i.type !== 'primary') ?? [])
+
+// Result count label (pluralisation simple)
+const resultLabel = computed(() => {
+  const n = result.value.docs.length
+  const hasFilter = queryState.value.committed && queryState.value.committed !== '{}'
+  const docWord = n > 1 ? t('collectionView.toolbar.documents').toLowerCase() : 'document'
+  const matchWord = n > 1 ? 'correspondants' : 'correspondant'
+  return hasFilter ? `${n} ${docWord} ${matchWord}` : `${n} ${docWord}`
+})
 </script>
 
 <template>
@@ -162,12 +173,14 @@ const secondaryIndexes = computed(() => col.value?.indexes.filter(i => i.type !=
           </h2>
           <div class="vh-sub">
             <AppIcon name="Collection" :size="13" />
-            {{ col.docs.length }} documents · {{ col.indexes.length }} index · {{ sizeStr(col.estSize) }}
+            {{ col.docs.length }} {{ t('collectionView.toolbar.documents').toLowerCase() }} ·
+            {{ col.indexes.length }} {{ t('collectionView.toolbar.indexes').toLowerCase() }} ·
+            {{ sizeStr(col.estSize) }}
           </div>
         </div>
       </div>
       <div class="vh-indexes">
-        <span v-if="secondaryIndexes.length === 0" class="ix-none">aucun index secondaire</span>
+        <span v-if="secondaryIndexes.length === 0" class="ix-none">{{ t('collectionView.noSecondaryIndex') }}</span>
         <span
           v-for="ix in secondaryIndexes"
           :key="ix.field"
@@ -185,21 +198,21 @@ const secondaryIndexes = computed(() => col.value?.indexes.filter(i => i.type !=
     <div class="toolbar">
       <button class="tbtn primary" @click="addDocument">
         <AppIcon name="Plus" :size="15" />
-        <span>Ajouter un document</span>
+        <span>{{ t('collectionView.toolbar.addDocument') }}</span>
       </button>
       <button class="tbtn" @click="createIndexModal">
         <AppIcon name="Index" :size="15" />
-        <span>Créer un index</span>
+        <span>{{ t('collectionView.toolbar.createIndex') }}</span>
       </button>
       <!-- Tab switch -->
       <div class="seg" style="margin-left: 8px">
-        <button class="seg-btn" :class="{ on: activeTab === 'docs' }" @click="activeTab = 'docs'">Documents</button>
-        <button class="seg-btn" :class="{ on: activeTab === 'indexes' }" @click="activeTab = 'indexes'">Index</button>
+        <button class="seg-btn" :class="{ on: activeTab === 'docs' }" @click="activeTab = 'docs'">{{ t('collectionView.toolbar.documents') }}</button>
+        <button class="seg-btn" :class="{ on: activeTab === 'indexes' }" @click="activeTab = 'indexes'">{{ t('collectionView.toolbar.indexes') }}</button>
       </div>
       <span class="tb-spacer" />
       <button class="tbtn" @click="refresh">
         <AppIcon name="Refresh" :size="15" />
-        <span>Rafraîchir</span>
+        <span>{{ t('collectionView.toolbar.refresh') }}</span>
       </button>
     </div>
 
@@ -213,17 +226,17 @@ const secondaryIndexes = computed(() => col.value?.indexes.filter(i => i.type !=
             class="q-input"
             spellcheck="false"
             :value="queryState.draft"
-            placeholder='{ } — ex : { "status": "actif", "price": { "$lt": 20 } }'
+            :placeholder="t('collectionView.query.placeholder')"
             @input="setDraft($event.target.value)"
             @keydown.enter="runNow"
           />
-          <button v-if="queryState.draft" class="q-clear" title="Vider" @click="clearQuery">
+          <button v-if="queryState.draft" class="q-clear" :title="t('collectionView.query.clear')" @click="clearQuery">
             <AppIcon name="Close" :size="14" />
           </button>
         </div>
         <button class="q-run" @click="runNow">
           <AppIcon name="Play" :size="14" />
-          <span>Exécuter</span>
+          <span>{{ t('collectionView.query.run') }}</span>
         </button>
       </div>
 
@@ -234,10 +247,7 @@ const secondaryIndexes = computed(() => col.value?.indexes.filter(i => i.type !=
         </span>
         <span v-else class="result-count">
           <strong>{{ result.docs.length }}</strong>
-          document{{ result.docs.length > 1 ? 's' : '' }}
-          <span v-if="queryState.committed && queryState.committed !== '{}'">
-            correspondant{{ result.docs.length > 1 ? 's' : '' }}
-          </span>
+          {{ resultLabel.replace(/^\d+\s*/, '') }}
           <span class="result-time"> · {{ result.ms }} ms</span>
         </span>
       </div>
@@ -246,7 +256,7 @@ const secondaryIndexes = computed(() => col.value?.indexes.filter(i => i.type !=
       <div class="docs-scroll">
         <div v-if="!result.error && result.docs.length === 0" class="docs-empty">
           <AppIcon name="Search" :size="22" />
-          <p>Aucun document ne correspond à la requête.</p>
+          <p>{{ t('collectionView.result.noMatch') }}</p>
         </div>
 
         <div v-for="(doc, i) in result.docs" :key="doc._id" class="doccard">
@@ -257,10 +267,10 @@ const secondaryIndexes = computed(() => col.value?.indexes.filter(i => i.type !=
             <span class="doc-idx">{{ i + 1 }}</span>
             <code class="doc-id" :style="{ '--c': db.color }">{{ doc._id }}</code>
             <div class="doc-actions">
-              <button class="doc-btn" title="Éditer" @click="editDoc(doc)">
+              <button class="doc-btn" :title="t('collectionView.doc.edit')" @click="editDoc(doc)">
                 <AppIcon name="Edit" :size="15" />
               </button>
-              <button class="doc-btn danger" title="Supprimer" @click="deleteDoc(doc)">
+              <button class="doc-btn danger" :title="t('collectionView.doc.delete')" @click="deleteDoc(doc)">
                 <AppIcon name="Trash" :size="15" />
               </button>
             </div>
@@ -278,15 +288,15 @@ const secondaryIndexes = computed(() => col.value?.indexes.filter(i => i.type !=
         <table class="dtable">
           <thead>
             <tr>
-              <th>Champ</th>
-              <th>Type</th>
-              <th class="num">Documents</th>
+              <th>{{ t('collectionView.indexTable.field') }}</th>
+              <th>{{ t('collectionView.indexTable.type') }}</th>
+              <th class="num">{{ t('collectionView.indexTable.documents') }}</th>
               <th class="act"></th>
             </tr>
           </thead>
           <tbody>
             <tr v-if="col.indexes.length === 0" class="empty-row">
-              <td colspan="4">Aucun index. Utilisez « Créer un index ».</td>
+              <td colspan="4">{{ t('collectionView.indexTable.noIndexes') }}</td>
             </tr>
             <tr v-for="ix in col.indexes" :key="ix.field">
               <td>
@@ -305,7 +315,7 @@ const secondaryIndexes = computed(() => col.value?.indexes.filter(i => i.type !=
                 <button
                   v-if="ix.type !== 'primary'"
                   class="row-icon"
-                  title="Supprimer l'index"
+                  :title="t('collectionView.indexTable.deleteIndex')"
                   @click="dropIndex(ix.field)"
                 >
                   <AppIcon name="Trash" :size="15" />
@@ -318,7 +328,7 @@ const secondaryIndexes = computed(() => col.value?.indexes.filter(i => i.type !=
         <div class="toolbar" style="padding: 12px 0 0">
           <button class="tbtn primary" @click="createIndexModal">
             <AppIcon name="Plus" :size="15" />
-            <span>Créer un index</span>
+            <span>{{ t('collectionView.indexTable.createIndex') }}</span>
           </button>
         </div>
       </div>

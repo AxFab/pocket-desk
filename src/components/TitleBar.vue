@@ -1,9 +1,11 @@
 <script setup>
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAppStore } from '@/store/app.js'
 import AppIcon from './AppIcons.vue'
 
 const store = useAppStore()
+const { t } = useI18n()
 
 const isDark = computed(() => {
   if (store.themeMode === 'system') return window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -16,11 +18,7 @@ const themeIcon = computed(() => {
   return 'Monitor'
 })
 
-const themeLabel = computed(() => {
-  if (store.themeMode === 'light') return 'Clair'
-  if (store.themeMode === 'dark') return 'Sombre'
-  return 'Système'
-})
+const themeLabel = computed(() => t('prefs.' + store.themeMode))
 
 const activeLabel = computed(() => {
   const tab = store.activeTab
@@ -60,7 +58,7 @@ function winMax() { window.pocketDesk?.winMaximize() }
     </div>
 
     <div class="tb-right">
-      <button class="theme-btn" @click="cycleTheme" :title="`Thème : ${themeLabel} (cliquez pour changer)`">
+      <button class="theme-btn" @click="cycleTheme" :title="t('titleBar.themeTitle', { label: themeLabel })">
         <AppIcon :name="themeIcon" :size="15" />
         <span>{{ themeLabel }}</span>
       </button>
@@ -68,9 +66,9 @@ function winMax() { window.pocketDesk?.winMaximize() }
 
     <!-- Windows controls -->
     <div v-if="!isMac" class="winbtns">
-      <button class="wb" @click="winMin" title="Réduire"><span class="wb-min" /></button>
-      <button class="wb" @click="winMax" title="Agrandir"><span class="wb-max" /></button>
-      <button class="wb close" @click="winClose" title="Fermer">
+      <button class="wb" @click="winMin" :title="t('titleBar.minimize')"><span class="wb-min" /></button>
+      <button class="wb" @click="winMax" :title="t('titleBar.maximize')"><span class="wb-max" /></button>
+      <button class="wb close" @click="winClose" :title="t('titleBar.close')">
         <AppIcon name="Close" :size="13" />
       </button>
     </div>

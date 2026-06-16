@@ -1,4 +1,5 @@
 <script setup>
+import { useI18n } from 'vue-i18n'
 import ModalBase from './ModalBase.vue'
 
 const props = defineProps({
@@ -6,6 +7,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['close', 'confirm'])
+const { t } = useI18n()
 </script>
 
 <template>
@@ -14,7 +16,7 @@ const emit = defineEmits(['close', 'confirm'])
     <div v-if="data.detail" class="confirm-detail mono">{{ data.detail }}</div>
 
     <template #footer>
-      <button class="btn ghost" @click="emit('close')">Annuler</button>
+      <button class="btn ghost" @click="emit('close')">{{ t('modals.cancel') }}</button>
       <button
         class="btn"
         :class="data.danger ? 'danger' : 'primary'"

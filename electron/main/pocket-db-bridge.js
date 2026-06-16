@@ -54,7 +54,7 @@ export default class PocketDbBridge {
         (loadError ? ` (${loadError.message})` : '')
       )
     }
-    const db = PocketDb.open({ path })
+    const db = PocketDb.pocketDb(path)
     this._dbs.set(id, { db, path })
     return { ok: true, collections: await this.listCollections(id) }
   }

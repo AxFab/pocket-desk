@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import ModalBase from './ModalBase.vue'
 import AppIcon from '@/components/AppIcons.vue'
 
@@ -8,6 +9,7 @@ const props = defineProps({
   // data: { isNew: bool, doc: object }
 })
 const emit = defineEmits(['close', 'confirm'])
+const { t } = useI18n()
 
 // ---- Mode: 'form' | 'json' -------------------------------------------------
 const mode = ref('form')
@@ -27,11 +29,11 @@ const fields = ref(
 const raw = ref(JSON.stringify(props.data.doc, null, 2))
 
 // ---- Coerce ----------------------------------------------------------------
-function coerce(t, rawVal) {
-  if (t === 'number') return rawVal === '' ? 0 : Number(rawVal)
-  if (t === 'boolean') return rawVal === true || rawVal === 'true'
-  if (t === 'null') return null
-  if (t === 'array' || t === 'object') {
+function coerce(type, rawVal) {
+  if (type === 'number') return rawVal === '' ? 0 : Number(rawVal)
+  if (type === 'boolean') return rawVal === true || rawVal === 'true'
+  if (type === 'null') return null
+  if (type === 'array' || type === 'object') {
     try { return JSON.parse(rawVal) } catch { return rawVal }
   }
   return rawVal
@@ -70,7 +72,7 @@ function toForm() {
     err.value = null
     mode.value = 'form'
   } catch (e) {
-    err.value = 'JSON invalide : ' + e.message
+    err.value = t('errors.invalidJson', { error: e.message })
   }
 }
 
@@ -78,7 +80,7 @@ function toForm() {
 function save() {
   let obj
   if (mode.value === 'json') {
-    try { obj = JSON.parse(raw.value) } catch (e) { err.value = 'JSON invalide : ' + e.message; return }
+    try { obj = JSON.parse(raw.value) } catch (e) { err.value = t('errors.invalidJson', { error: e.message }); return }
   } else {
     obj = buildFromFields()
   }
@@ -88,7 +90,7 @@ function save() {
 
 <template>
   <ModalBase
-    :title="data.isNew ? 'Nouveau document' : 'Éditer le document'"
+    :title="data.isNew ? t('modals.editDoc.newTitle') : t('modals.editDoc.editTitle')"
     icon="Doc"
     :wide="true"
     @close="emit('close')"
@@ -96,10 +98,10 @@ function save() {
     <!-- Mode tabs -->
     <div class="editor-tabs">
       <button class="etab" :class="{ on: mode === 'form' }" @click="mode === 'json' ? toForm() : undefined">
-        <AppIcon name="Form" :size="14" />Formulaire
+        <AppIcon name="Form" :size="14" />{{ t('modals.editDoc.form') }}
       </button>
       <button class="etab" :class="{ on: mode === 'json' }" @click="mode === 'form' ? toJson() : undefined">
-        <AppIcon name="Braces" :size="14" />JSON
+        <AppIcon name="Braces" :size="14" />{{ t('modals.editDoc.json') }}
       </button>
     </div>
 
@@ -120,7 +122,7 @@ function save() {
         <input
           class="inp mono fkey"
           :value="f.k"
-          placeholder="champ"
+          :placeholder="t('modals.editDoc.fieldPlaceholder')"
           :disabled="f.k === '_id'"
           @input="setField(i, { k: $event.target.value })"
         />
@@ -130,12 +132,12 @@ function save() {
           :value="f.t"
           :disabled="f.k === '_id'"
           @change="e => {
-            const t = e.target.value
+            const type = e.target.value
             const complex = f.t === 'object' || f.t === 'array'
-            setField(i, { t, v: coerce(t, complex ? JSON.stringify(f.v) : f.v) })
+            setField(i, { t: type, v: coerce(type, complex ? JSON.stringify(f.v) : f.v) })
           }"
         >
-          <option v-for="t in ['string','number','boolean','null','array','object']" :key="t" :value="t">{{ t }}</option>
+          <option v-for="type in ['string','number','boolean','null','array','object']" :key="type" :value="type">{{ type }}</option>
         </select>
         <!-- Value -->
         <button
@@ -163,12 +165,12 @@ function save() {
           @input="setField(i, { v: coerce(f.t, $event.target.value) })"
         />
         <!-- Delete field -->
-        <button v-if="f.k !== '_id'" class="frow-del" @click="removeField(i)" title="Retirer le champ">
+        <button v-if="f.k !== '_id'" class="frow-del" @click="removeField(i)" :title="t('modals.editDoc.removeField')">
           <AppIcon name="Trash" :size="14" />
         </button>
       </div>
       <button class="add-field" @click="addField">
-        <AppIcon name="Plus" :size="14" />Ajouter un champ
+        <AppIcon name="Plus" :size="14" />{{ t('modals.editDoc.addField') }}
       </button>
     </div>
 
@@ -185,9 +187,9 @@ function save() {
       <div class="foot-id">
         <code v-if="!data.isNew">_id: {{ data.doc._id }}</code>
       </div>
-      <button class="btn ghost" @click="emit('close')">Annuler</button>
+      <button class="btn ghost" @click="emit('close')">{{ t('modals.cancel') }}</button>
       <button class="btn primary" @click="save">
-        {{ data.isNew ? 'Insérer' : 'Enregistrer' }}
+        {{ data.isNew ? t('modals.editDoc.insert') : t('modals.editDoc.save') }}
       </button>
     </template>
   </ModalBase>

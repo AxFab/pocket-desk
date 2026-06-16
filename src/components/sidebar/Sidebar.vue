@@ -1,10 +1,12 @@
 <script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAppStore } from '@/store/app.js'
 import AppIcon from '@/components/AppIcons.vue'
 import DbMenu from './DbMenu.vue'
 
 const store = useAppStore()
+const { t } = useI18n()
 const menu = ref(null) // { dbId, top, left }
 
 function openMenu(e, dbId) {
@@ -22,11 +24,11 @@ async function handleDbMenuAction(action, dbId) {
       store.openModal({
         type: 'prompt',
         data: {
-          title: 'Ajouter une collection',
-          label: 'Nom de la collection',
-          placeholder: 'ex : sessions',
+          title: t('modals.addCollection.title'),
+          label: t('modals.addCollection.label'),
+          placeholder: t('modals.addCollection.placeholder'),
           icon: 'Collection',
-          confirm: 'Créer'
+          confirm: t('modals.addCollection.confirm')
         },
         onConfirm: (val) => {
           store.addCollection(dbId, val)
@@ -39,10 +41,10 @@ async function handleDbMenuAction(action, dbId) {
       store.openModal({
         type: 'prompt',
         data: {
-          title: 'Renommer la base',
-          label: 'Nom de la connexion',
+          title: t('modals.renameDb.title'),
+          label: t('modals.renameDb.label'),
           value: db.name,
-          confirm: 'Renommer'
+          confirm: t('modals.renameDb.confirm')
         },
         onConfirm: (val) => {
           store.renameDatabase(dbId, val)
@@ -61,16 +63,16 @@ async function handleDbMenuAction(action, dbId) {
 
     case 'close-tabs':
       store.closeDbTabs(dbId)
-      store.flash('Onglets de « ' + db.name + ' » fermés')
+      store.flash(t('store.tabsClosed', { name: db.name }))
       break
 
     case 'close':
       store.openModal({
         type: 'confirm',
         data: {
-          title: 'Fermer la base',
-          body: `Fermer « ${db.name} » ? La connexion sera retirée de la liste (le fichier n'est pas supprimé).`,
-          confirm: 'Fermer la base',
+          title: t('modals.closeDb.title'),
+          body: t('modals.closeDb.body', { name: db.name }),
+          confirm: t('modals.closeDb.confirm'),
           danger: true
         },
         onConfirm: () => {
@@ -89,9 +91,9 @@ function handleDeleteCollection(dbId, colId) {
   store.openModal({
     type: 'confirm',
     data: {
-      title: 'Supprimer la collection',
-      body: `Supprimer définitivement « ${c.name} » et ses ${c.docs.length} documents ?`,
-      confirm: 'Supprimer',
+      title: t('modals.deleteCollection.title'),
+      body: t('modals.deleteCollection.body', { name: c.name, count: c.docs.length }),
+      confirm: t('modals.deleteCollection.confirm'),
       danger: true
     },
     onConfirm: () => {
@@ -116,21 +118,21 @@ function isColActive(dbId, colId) {
     <div class="side-head">
       <button class="open-db" @click="store.openModal({ type: 'new-connection' })">
         <AppIcon name="Plus" :size="16" />
-        <span>Ouvrir une base</span>
+        <span>{{ t('sidebar.openDb') }}</span>
       </button>
     </div>
 
     <div class="side-scroll">
-      <div class="side-label">Bases ouvertes</div>
+      <div class="side-label">{{ t('sidebar.openedDbs') }}</div>
 
       <div v-if="store.databases.length === 0" class="side-empty">
-        Aucune base ouverte.<br />Ouvrez un fichier <code>.pdb</code>.
+        {{ t('sidebar.noDbs') }}<br />{{ t('sidebar.noDbsHint') }}
       </div>
 
       <div v-for="db in store.databases" :key="db.id" class="db-block">
         <div class="db-row" :class="{ active: isDbActive(db.id) }">
           <!-- Caret: expand/collapse -->
-          <button class="db-caret" @click="store.toggleExpand(db.id)" :title="db.expanded ? 'Replier' : 'Déplier'">
+          <button class="db-caret" @click="store.toggleExpand(db.id)" :title="db.expanded ? t('sidebar.collapse') : t('sidebar.expand')">
             <AppIcon :name="db.expanded ? 'ChevronDown' : 'ChevronRight'" :size="15" />
           </button>
           <!-- Main: open db tab -->
@@ -140,14 +142,14 @@ function isColActive(dbId, colId) {
             <span class="db-meta">{{ db.collections.length }}</span>
           </button>
           <!-- Options menu -->
-          <button class="db-dots" @click="openMenu($event, db.id)" title="Options">
+          <button class="db-dots" @click="openMenu($event, db.id)" :title="t('sidebar.options')">
             <AppIcon name="Dots" :size="16" />
           </button>
         </div>
 
         <!-- Collections list -->
         <div v-if="db.expanded" class="col-list">
-          <div v-if="db.collections.length === 0" class="col-empty">— aucune collection —</div>
+          <div v-if="db.collections.length === 0" class="col-empty">{{ t('sidebar.noCollections') }}</div>
           <div
             v-for="col in db.collections"
             :key="col.id"
@@ -161,7 +163,7 @@ function isColActive(dbId, colId) {
             <span class="col-count">{{ col.docs.length }}</span>
             <button
               class="col-del"
-              title="Supprimer la collection"
+              :title="t('sidebar.deleteCollection')"
               @click.stop="handleDeleteCollection(db.id, col.id)"
             >
               <AppIcon name="Trash" :size="14" />
