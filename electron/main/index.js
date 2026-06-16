@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, dialog, shell } from 'electron'
+import { app, BrowserWindow, ipcMain, dialog, shell, nativeImage } from 'electron'
 import { join } from 'path'
 import { fileURLToPath } from 'url'
 import PocketDbBridge from './pocket-db-bridge.js'
@@ -6,6 +6,12 @@ import PocketDbBridge from './pocket-db-bridge.js'
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
 const bridge = new PocketDbBridge()
 const isDev = process.env.NODE_ENV === 'development'
+
+// App identity (shown in macOS menu bar, dock, "About", notifications…)
+app.setName('Pocket-desk')
+
+// App icon (PNG works for dev dock/window; packaged builds use build/icon.* via electron-builder)
+const appIcon = nativeImage.createFromPath(join(__dirname, '../../build/icon.png'))
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -16,6 +22,7 @@ function createWindow() {
     titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'default',
     frame: process.platform !== 'darwin',
     backgroundColor: '#121a22',
+    icon: appIcon,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
@@ -42,6 +49,11 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  // macOS: window `icon` is ignored — set the dock icon explicitly (mainly for dev)
+  if (process.platform === 'darwin' && !appIcon.isEmpty()) {
+    app.dock?.setIcon(appIcon)
+  }
+
   registerIpcHandlers()
   createWindow()
 
