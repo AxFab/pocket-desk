@@ -38,7 +38,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
 
       - name: Install dependencies
@@ -46,6 +46,12 @@ jobs:
 
       - name: Build renderer + main
         run: npm run build
+
+      - name: Clean up mounted volumes (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          # Unmount any leftover Pocket-desk volumes
+          diskutil list | grep -i "Pocket-desk" | awk '{print $NF}' | xargs -I {} diskutil unmount force /Volumes/{} 2>/dev/null || true
 
       - name: Package & publish (${{ matrix.platform }})
         run: npx electron-builder --${{ matrix.platform }} --publish always
