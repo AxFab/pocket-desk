@@ -1,5 +1,6 @@
 <script setup>
 import { computed, watch, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useAppStore } from '@/store/app.js'
 
 import TitleBar      from '@/components/TitleBar.vue'
@@ -21,6 +22,10 @@ import EditDocModal       from '@/components/modals/EditDocModal.vue'
 
 const store = useAppStore()
 const showPrefs = ref(false)
+
+// ---- Locale effect ---------------------------------------------------------
+const { locale } = useI18n()
+watch(() => store.locale, (l) => { locale.value = l }, { immediate: true })
 
 // ---- Theme / density / accent effect ---------------------------------------
 const sysDark = ref(window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false)

@@ -158,6 +158,7 @@
   },
   "titleBar": {
     "themeTitle": "Thème : {label} (cliquez pour changer)",
+    "languageTitle": "Langue : {label} (cliquez pour changer)",
     "minimize": "Réduire",
     "maximize": "Agrandir",
     "close": "Fermer"

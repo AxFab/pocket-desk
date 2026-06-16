@@ -15,8 +15,7 @@
   <img src="https://img.shields.io/badge/built%20with-Electron%20%2B%20Vue%203-41b883" alt="Electron + Vue 3" />
 </p>
 
-> **Warning:** `pocket-desk` is a companion tool for the new `pocket-db` package. Much of its initial implementation was AI-assisted ("vibe coded") and has not yet undergone the same level of review and testing as my other projects. I'll continue to invest in improving its quality, stability, and documentation as adoption and user demand grow.
-
+> **Warning:** `pocket-desk` is a companion tool for the new `pocket-db` package. This tool is currently in beta, but it is already useful for getting started. Feedback is welcome and greatly appreciated. I'll continue to invest in improving its quality, stability, and documentation as adoption and user demand grow.
 
 ---
 

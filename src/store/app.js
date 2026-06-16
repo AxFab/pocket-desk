@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import i18n from '@/i18n.js'
+import i18n, { detectLocale } from '@/i18n.js'
 
 const t = (...args) => i18n.global.t(...args)
 
@@ -70,12 +70,18 @@ export const useAppStore = defineStore('app', () => {
   const themeMode = ref(_prefs.themeMode || 'system') // 'light' | 'dark' | 'system'
   const density = ref(_prefs.density || 'regular')    // 'compact' | 'regular' | 'comfy'
   const accent = ref(_prefs.accent || '#3f9a4f')
+  const locale = ref(detectLocale())                  // 'en' | 'fr'
 
   function setPref(key, value) {
-    const map = { themeMode, density, accent }
+    const map = { themeMode, density, accent, locale }
     if (map[key]) {
       map[key].value = value
-      savePrefs({ themeMode: themeMode.value, density: density.value, accent: accent.value })
+      savePrefs({
+        themeMode: themeMode.value,
+        density: density.value,
+        accent: accent.value,
+        locale: locale.value
+      })
     }
   }
 
@@ -444,7 +450,7 @@ export const useAppStore = defineStore('app', () => {
 
   return {
     // prefs
-    themeMode, density, accent, platform, setPref,
+    themeMode, density, accent, locale, platform, setPref,
     // state
     databases, tabs, activeId, activeTab, activeDb, modal, queries, runTokens, toast, tipIndex,
     // helpers

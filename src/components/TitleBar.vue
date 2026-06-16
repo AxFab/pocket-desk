@@ -38,6 +38,12 @@ function cycleTheme() {
   store.setPref('themeMode', next)
 }
 
+const localeLabel = computed(() => store.locale.toUpperCase())
+
+function toggleLocale() {
+  store.setPref('locale', store.locale === 'fr' ? 'en' : 'fr')
+}
+
 function winClose() { window.pocketDesk?.winClose() }
 function winMin() { window.pocketDesk?.winMinimize() }
 function winMax() { window.pocketDesk?.winMaximize() }
@@ -58,6 +64,10 @@ function winMax() { window.pocketDesk?.winMaximize() }
     </div>
 
     <div class="tb-right">
+      <button class="theme-btn" @click="toggleLocale" :title="t('titleBar.languageTitle', { label: localeLabel })">
+        <AppIcon name="Globe" :size="15" />
+        <span>{{ localeLabel }}</span>
+      </button>
       <button class="theme-btn" @click="cycleTheme" :title="t('titleBar.themeTitle', { label: themeLabel })">
         <AppIcon :name="themeIcon" :size="15" />
         <span>{{ themeLabel }}</span>
