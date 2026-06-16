@@ -58,7 +58,8 @@
       ]
     },
     "dmg": {
-      "title": "Pocket-desk ${version}"
+      "title": "Pocket-desk ${version} ${arch}",
+      "writeUpdateInfo": false
     },
     "win": {
       "icon": "build/icon.ico",
