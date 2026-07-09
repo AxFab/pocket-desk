@@ -58,7 +58,7 @@
       "refresh": "Rafraîchir"
     },
     "query": {
-      "placeholder": "{ } — ex : { \"status\": \"actif\", \"price\": { \"$lt\": 20 } }",
+      "placeholder": "｛ ｝ — ex : ｛ \"status\": \"actif\", \"price\": ｛ \"$lt\": 20 ｝ ｝",
       "clear": "Vider",
       "run": "Exécuter"
     },

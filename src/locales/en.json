@@ -58,7 +58,7 @@
       "refresh": "Refresh"
     },
     "query": {
-      "placeholder": "{ } — ex : { \"status\": \"actif\", \"price\": { \"$lt\": 20 } }",
+      "placeholder": "｛ ｝ — e.g. ｛ \"status\": \"active\", \"price\": ｛ \"$lt\": 20 ｝ ｝",
       "clear": "Clear",
       "run": "Run"
     },
