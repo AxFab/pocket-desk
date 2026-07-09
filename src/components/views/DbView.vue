@@ -22,6 +22,7 @@ const toolbarActions = computed(() => [
   { id: 'duplicate',      label: t('dbView.toolbar.duplicate'),     icon: 'Copy' },
   { id: 'compact',        label: t('dbView.toolbar.compact'),       icon: 'Compact' },
   { id: 'close-tabs',     label: t('dbView.toolbar.closeTabs'),     icon: 'CloseTabs' },
+  { id: 'disconnect',     label: t('dbView.toolbar.disconnect'),    icon: 'PlugOff' },
 ])
 
 function handleAction(id) {
@@ -63,6 +64,18 @@ function handleAction(id) {
     case 'close-tabs':
       store.closeDbTabs(dbId)
       store.flash(t('store.tabsClosedShort'))
+      break
+    case 'disconnect':
+      store.openModal({
+        type: 'confirm',
+        data: {
+          title: t('modals.disconnectDb.title'),
+          body: t('modals.disconnectDb.body', { name: db.name }),
+          confirm: t('modals.disconnectDb.confirm'),
+          danger: true
+        },
+        onConfirm: () => { store.disconnectDatabase(dbId); store.closeModal() }
+      })
       break
   }
 }
@@ -121,60 +134,72 @@ function deleteCollection(colId) {
       </div>
     </header>
 
-    <!-- Toolbar -->
-    <div class="toolbar">
-      <button
-        v-for="a in toolbarActions"
-        :key="a.id"
-        class="tbtn"
-        :class="{ primary: a.primary }"
-        @click="handleAction(a.id)"
-      >
-        <AppIcon :name="a.icon" :size="15" />
-        <span>{{ a.label }}</span>
+    <!-- Disconnected banner -->
+    <div v-if="db.connected === false" class="disconnected-banner">
+      <AppIcon name="PlugOff" :size="22" />
+      <p>{{ t('dbView.disconnected.message') }}</p>
+      <button class="tbtn primary" @click="store.reconnectDatabase(dbId)">
+        <AppIcon name="Plug" :size="15" />
+        <span>{{ t('dbView.disconnected.reconnect') }}</span>
       </button>
     </div>
 
-    <!-- Collections table -->
-    <div class="table-wrap">
-      <table class="dtable">
-        <thead>
-          <tr>
-            <th>{{ t('dbView.table.collection') }}</th>
-            <th class="num">{{ t('dbView.table.documents') }}</th>
-            <th class="num">{{ t('dbView.table.index') }}</th>
-            <th class="num">{{ t('dbView.table.estSize') }}</th>
-            <th class="num">{{ t('dbView.table.dead') }}</th>
-            <th class="act"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-if="db.collections.length === 0" class="empty-row">
-            <td colspan="6">{{ t('dbView.table.noCollections') }}</td>
-          </tr>
-          <tr
-            v-for="col in db.collections"
-            :key="col.id"
-            @click="openCollection(col.id)"
-          >
-            <td>
-              <div class="cname">
-                <AppIcon name="Collection" :size="16" />
-                <span>{{ col.name }}</span>
-              </div>
-            </td>
-            <td class="num">{{ col.docs.length }}</td>
-            <td class="num">{{ col.indexes.length }}</td>
-            <td class="num">{{ sizeStr(col.estSize) }}</td>
-            <td class="num dead">{{ col.dead }}</td>
-            <td class="act">
-              <button class="row-icon" :title="t('dbView.table.delete')" @click.stop="deleteCollection(col.id)">
-                <AppIcon name="Trash" :size="15" />
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <template v-else>
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <button
+          v-for="a in toolbarActions"
+          :key="a.id"
+          class="tbtn"
+          :class="{ primary: a.primary }"
+          @click="handleAction(a.id)"
+        >
+          <AppIcon :name="a.icon" :size="15" />
+          <span>{{ a.label }}</span>
+        </button>
+      </div>
+
+      <!-- Collections table -->
+      <div class="table-wrap">
+        <table class="dtable">
+          <thead>
+            <tr>
+              <th>{{ t('dbView.table.collection') }}</th>
+              <th class="num">{{ t('dbView.table.documents') }}</th>
+              <th class="num">{{ t('dbView.table.index') }}</th>
+              <th class="num">{{ t('dbView.table.estSize') }}</th>
+              <th class="num">{{ t('dbView.table.dead') }}</th>
+              <th class="act"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-if="db.collections.length === 0" class="empty-row">
+              <td colspan="6">{{ t('dbView.table.noCollections') }}</td>
+            </tr>
+            <tr
+              v-for="col in db.collections"
+              :key="col.id"
+              @click="openCollection(col.id)"
+            >
+              <td>
+                <div class="cname">
+                  <AppIcon name="Collection" :size="16" />
+                  <span>{{ col.name }}</span>
+                </div>
+              </td>
+              <td class="num">{{ col.docs.length }}</td>
+              <td class="num">{{ col.indexes.length }}</td>
+              <td class="num">{{ sizeStr(col.estSize) }}</td>
+              <td class="num dead">{{ col.dead }}</td>
+              <td class="act">
+                <button class="row-icon" :title="t('dbView.table.delete')" @click.stop="deleteCollection(col.id)">
+                  <AppIcon name="Trash" :size="15" />
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </template>
   </div>
 </template>

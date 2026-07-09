@@ -191,7 +191,7 @@ export const useAppStore = defineStore('app', () => {
 
   function toggleExpand(dbId) {
     databases.value = databases.value.map(d =>
-      d.id === dbId ? { ...d, expanded: !d.expanded } : d
+      d.id === dbId && d.connected !== false ? { ...d, expanded: !d.expanded } : d
     )
   }
 
@@ -260,7 +260,7 @@ export const useAppStore = defineStore('app', () => {
     const fileName = path.replace(/.*[/\\]/, '')
     const db = {
       id, name: name || fileName.replace(/\.pdb$/, ''),
-      fileName, path, color, colorId, expanded: true, collections
+      fileName, path, color, colorId, expanded: true, collections, connected: true
     }
     databases.value = [...databases.value, db]
 
@@ -280,6 +280,53 @@ export const useAppStore = defineStore('app', () => {
     try { await window.pocketDesk.closeDb(dbId) } catch {}
     closeDbTabs(dbId)
     databases.value = databases.value.filter(d => d.id !== dbId)
+  }
+
+  /**
+   * Disconnects a database without removing it from the sidebar: releases the
+   * file lock (IPC close), closes every tab belonging to it, and clears its
+   * collections. The entry stays put so it can be reconnected without
+   * re-browsing for the file.
+   */
+  async function disconnectDatabase(dbId) {
+    const db = dbById(dbId)
+    if (!db) return
+    try { await window.pocketDesk.closeDb(dbId) } catch {}
+    closeDbTabs(dbId)
+    patchDb(dbId, d => ({ ...d, connected: false, expanded: false, collections: [] }))
+    flash(t('store.dbDisconnected', { name: db.name }))
+  }
+
+  /** Reconnects a previously-disconnected database using its stored path. */
+  async function reconnectDatabase(dbId) {
+    const db = dbById(dbId)
+    if (!db) return
+
+    let result
+    try {
+      result = await window.pocketDesk.openDb(dbId, db.path)
+    } catch (e) {
+      flash(t('store.openFailed', { error: ipcError(e) }))
+      return
+    }
+
+    const collections = (result?.collections || []).map(c => ({
+      id: 'col_' + Math.random().toString(36).slice(2, 8),
+      name: c.name,
+      docs: [],
+      indexes: c.indexes || [{ field: '_id', type: 'primary' }],
+      estSize: 64,
+      dead: 0
+    }))
+
+    patchDb(dbId, d => ({ ...d, connected: true, expanded: true, collections }))
+
+    try {
+      await Promise.all(collections.map(c => fetchCollection(dbId, c.id)))
+    } catch (e) {
+      flash(t('store.loadError', { error: ipcError(e) }))
+    }
+    flash(t('store.dbReconnected', { name: db.name }))
   }
 
   async function compactDatabase(dbId) {
@@ -458,7 +505,7 @@ export const useAppStore = defineStore('app', () => {
     // tabs
     openDbTab, openCollectionTab, closeTab, reorderTabs, closeDbTabs,
     // db
-    toggleExpand, openDatabase, closeDatabase, compactDatabase, renameDatabase, duplicateDatabase,
+    toggleExpand, openDatabase, closeDatabase, disconnectDatabase, reconnectDatabase, compactDatabase, renameDatabase, duplicateDatabase,
     // collections
     addCollection, deleteCollection, fetchCollection, findDocuments,
     // documents

@@ -6,19 +6,27 @@ import AppIcon from '@/components/AppIcons.vue'
 
 const props = defineProps({
   anchor: { type: Object, required: true }, // { top, left }
-  dbId: { type: String, required: true }
+  dbId: { type: String, required: true },
+  connected: { type: Boolean, default: true }
 })
 
 const emit = defineEmits(['action', 'close'])
 const { t } = useI18n()
 
-const items = computed(() => [
+const items = computed(() => props.connected ? [
   { id: 'add-collection', label: t('dbMenu.addCollection'), icon: 'Plus' },
   { id: 'rename',         label: t('dbMenu.renameDb'),      icon: 'Rename' },
   { id: 'duplicate',      label: t('dbMenu.duplicateDb'),   icon: 'Copy' },
   { id: 'compact',        label: t('dbMenu.compactDb'),     icon: 'Compact' },
   { sep: true },
   { id: 'close-tabs',     label: t('dbMenu.closeTabs'),     icon: 'CloseTabs' },
+  { id: 'disconnect',     label: t('dbMenu.disconnectDb'),  icon: 'PlugOff' },
+  { sep: true },
+  { id: 'close',          label: t('dbMenu.closeDb'),       icon: 'Close', danger: true },
+] : [
+  { id: 'reconnect',      label: t('dbMenu.reconnectDb'),   icon: 'Plug' },
+  { id: 'rename',         label: t('dbMenu.renameDb'),      icon: 'Rename' },
+  { sep: true },
   { id: 'close',          label: t('dbMenu.closeDb'),       icon: 'Close', danger: true },
 ])
 

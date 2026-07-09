@@ -8,7 +8,10 @@
     "expand": "Déplier",
     "noCollections": "— aucune collection —",
     "options": "Options",
-    "deleteCollection": "Supprimer la collection"
+    "deleteCollection": "Supprimer la collection",
+    "disconnected": "déconnectée",
+    "disconnectedHint": "Reconnectez la base pour déplier ses collections",
+    "reconnect": "Reconnecter"
   },
   "dbMenu": {
     "addCollection": "Ajouter une collection",
@@ -16,6 +19,8 @@
     "duplicateDb": "Dupliquer la base",
     "compactDb": "Compacter la base",
     "closeTabs": "Fermer les onglets",
+    "disconnectDb": "Déconnecter",
+    "reconnectDb": "Reconnecter",
     "closeDb": "Fermer la base"
   },
   "emptyState": {
@@ -36,7 +41,8 @@
       "rename": "Renommer",
       "duplicate": "Dupliquer",
       "compact": "Compacter",
-      "closeTabs": "Fermer les onglets"
+      "closeTabs": "Fermer les onglets",
+      "disconnect": "Déconnecter"
     },
     "table": {
       "collection": "Collection",
@@ -46,6 +52,10 @@
       "dead": "Morts",
       "noCollections": "Aucune collection. Utilisez « Ajouter une collection ».",
       "delete": "Supprimer"
+    },
+    "disconnected": {
+      "message": "Base déconnectée : le fichier n'est plus verrouillé et peut être utilisé par un autre programme.",
+      "reconnect": "Reconnecter"
     }
   },
   "collectionView": {
@@ -107,6 +117,11 @@
       "title": "Fermer la base",
       "body": "Fermer « {name} » ? La connexion sera retirée de la liste (le fichier n'est pas supprimé).",
       "confirm": "Fermer la base"
+    },
+    "disconnectDb": {
+      "title": "Déconnecter la base",
+      "body": "Déconnecter « {name} » ? Ses onglets seront fermés et ses collections retirées de la barre latérale, mais la connexion reste disponible pour être reconnectée.",
+      "confirm": "Déconnecter"
     },
     "deleteCollection": {
       "title": "Supprimer la collection",
@@ -177,6 +192,8 @@
     "tabsClosed": "Onglets de « {name} » fermés",
     "tabsClosedShort": "Onglets fermés",
     "dbOpened": "Base « {name} » ouverte",
+    "dbDisconnected": "Base « {name} » déconnectée",
+    "dbReconnected": "Base « {name} » reconnectée",
     "openFailed": "Échec d'ouverture : {error}",
     "loadError": "Erreur de chargement : {error}",
     "compacted": "Base compactée · {count} enregistrements morts récupérés",

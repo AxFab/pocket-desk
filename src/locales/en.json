@@ -8,7 +8,10 @@
     "expand": "Expend",
     "noCollections": "— no collection —",
     "options": "Options",
-    "deleteCollection": "Delete the collection"
+    "deleteCollection": "Delete the collection",
+    "disconnected": "disconnected",
+    "disconnectedHint": "Reconnect the base to expand its collections",
+    "reconnect": "Reconnect"
   },
   "dbMenu": {
     "addCollection": "Add a collection",
@@ -16,6 +19,8 @@
     "duplicateDb": "Duplicate the base",
     "compactDb": "Compact the base",
     "closeTabs": "Close tabs",
+    "disconnectDb": "Disconnect",
+    "reconnectDb": "Reconnect",
     "closeDb": "Close the base"
   },
   "emptyState": {
@@ -36,7 +41,8 @@
       "rename": "Rename",
       "duplicate": "Duplicate",
       "compact": "Compact",
-      "closeTabs": "Close the tabs"
+      "closeTabs": "Close the tabs",
+      "disconnect": "Disconnect"
     },
     "table": {
       "collection": "Collection",
@@ -46,6 +52,10 @@
       "dead": "Dead",
       "noCollections": "No collection. Use « Add a collection ».",
       "delete": "Delete"
+    },
+    "disconnected": {
+      "message": "Base disconnected: the file is no longer locked and can be used by another program.",
+      "reconnect": "Reconnect"
     }
   },
   "collectionView": {
@@ -107,6 +117,11 @@
       "title": "close the base",
       "body": "Close « {name} »? The connection will be removed form the list (the file is not deleted).",
       "confirm": "Close the base"
+    },
+    "disconnectDb": {
+      "title": "Disconnect the base",
+      "body": "Disconnect « {name} »? Its tabs will be closed and its collections removed from the sidebar, but the connection stays available to be reconnected.",
+      "confirm": "Disconnect"
     },
     "deleteCollection": {
       "title": "Delete the collection",
@@ -177,6 +192,8 @@
     "tabsClosed": "Tab « {name} » closed",
     "tabsClosedShort": "Tab closed",
     "dbOpened": "Base « {name} » open",
+    "dbDisconnected": "Base « {name} » disconnected",
+    "dbReconnected": "Base « {name} » reconnected",
     "openFailed": "Open failed: {error}",
     "loadError": "Loading error: {error}",
     "compacted": "Base compacted · {count} dead record reclaimed",

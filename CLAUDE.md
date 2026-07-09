@@ -69,8 +69,9 @@ pocket-desk/
 - [x] Déplier / replier les collections (chevron)
 - [x] Clic sur base → ouvre onglet DbView
 - [x] Clic sur collection → ouvre onglet CollectionView
-- [x] Menu contextuel base : Ajouter, Renommer, Dupliquer, Compacter, Fermer onglets, Fermer
+- [x] Menu contextuel base : Ajouter, Renommer, Dupliquer, Compacter, Fermer onglets, Déconnecter, Fermer
 - [x] Bouton supprimer sur chaque collection (avec confirmation)
+- [x] **Déconnecter / reconnecter une base** : ferme la connexion pocket-db (libère le verrou `.lock`) et tous les onglets de la base, mais garde l'entrée dans le menu latéral — collections vidées, expand/collapse désactivé (badge « déconnectée »). « Reconnecter » (bouton dédié dans la ligne, entrée de menu, ou bannière dans DbView) rouvre le même fichier via son chemin déjà connu, sans repasser par le sélecteur de fichier
 
 ### Barre d'onglets
 - [x] Onglets colorés par base (pastille + bordure haute)
@@ -85,9 +86,10 @@ pocket-desk/
 
 ### Vue base (DbView)
 - [x] En-tête : nom, chemin, stats (collections, documents, taille, morts)
-- [x] Barre d'outils : Ajouter, Renommer, Dupliquer, Compacter, Fermer onglets
+- [x] Barre d'outils : Ajouter, Renommer, Dupliquer, Compacter, Fermer onglets, Déconnecter
 - [x] Table des collections (cliquable → ouvre onglet)
 - [x] Suppression de collection avec confirmation
+- [x] Bannière de reconnexion à la place de la table quand la base est déconnectée
 
 ### Vue collection (CollectionView)
 - [x] En-tête : base/collection, stats, chips d'index secondaires

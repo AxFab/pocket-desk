@@ -141,6 +141,19 @@ defineProps({
   <svg v-else-if="name==='Bookmark'" :width="size" :height="size" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
   </svg>
+  <!-- Plug (reconnect) -->
+  <svg v-else-if="name==='Plug'" :width="size" :height="size" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M9 2v4"/><path d="M15 2v4"/>
+    <path d="M7 6h10v4a5 5 0 0 1-10 0z"/>
+    <path d="M12 15v6"/>
+  </svg>
+  <!-- PlugOff (disconnect) -->
+  <svg v-else-if="name==='PlugOff'" :width="size" :height="size" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M9 2v4"/><path d="M15 2v4"/>
+    <path d="M7 6h10v4a5 5 0 0 1-10 0z"/>
+    <path d="M12 15v6"/>
+    <line x1="3" y1="3" x2="21" y2="21"/>
+  </svg>
   <!-- Fallback -->
   <svg v-else :width="size" :height="size" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
     <circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="0.6" fill="currentColor" stroke="none"/>
